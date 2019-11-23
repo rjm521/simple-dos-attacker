@@ -13,7 +13,7 @@
 #include "dos.h"
 #include "message.h"
 #include "socket.h"
-//#include "ping.h"
+#include "ping.h"
 #include "packet.h"
 
 

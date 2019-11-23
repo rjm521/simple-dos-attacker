@@ -8,6 +8,7 @@
 
 #include "ddos.h"
 #include "util.h"
+#include "ping.h"
 
 #include <math.h>//pow
 #include <stdio.h>//close
