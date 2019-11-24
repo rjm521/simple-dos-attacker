@@ -6,8 +6,8 @@
 //  Copyright © 2017 Andre Zay. All rights reserved.
 //
 
-#ifndef ddos_h
-#define ddos_h
+#ifndef dos_h
+#define dos_h
 
 #include "message.h"
 #include "socket.h"
@@ -48,6 +48,6 @@ typedef struct {
     uint8_t mode;
 } _dos_param;
 
-void ddos(char* host, int port, char* packet, int _tcount, int mode);
+void dos(char* host, int port, char* packet, int _tcount, int mode);
 
-#endif /* ddos_h */
+#endif /* dos_h */

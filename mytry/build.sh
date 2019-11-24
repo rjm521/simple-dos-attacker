@@ -1,9 +1,9 @@
 #!/bin/bash
 if [ ! $# -eq 2 ] #FIXME:normal way of chceking whether -n argument used
  then
-  echo "╔╦╗╔╦╗╔═╗╔═╗╔═╗╦═╗"
-  echo " ║║ ║║║ ║╚═╗║╣ ╠╦╝"
-  echo "═╩╝═╩╝╚═╝╚═╝╚═╝╩╚═ v1.2 builder"
+  echo "╔╦╗╔═╗╔═╗╔═╗╦═╗"
+  echo " ║║║ ║╚═╗║╣ ╠╦╝"
+  echo "╚╩╝╚═╝╚═╝╚═╝╩╚═ v1.0 builder"
 fi
 
 if [ $# -eq 0 ]
@@ -37,7 +37,7 @@ fi
 if [ $1 = "clean" ]
   then
    echo -n "Cleaning up..."
-   if [ ! -f "ddos" ]
+   if [ ! -f "dos" ]
     then
       echo "Already cleaned"
       exit
@@ -52,13 +52,13 @@ fi
 if [ $1 = "debug" ]
   then
    echo "Building debug"
-   gcc packet.c   util.c message.c socket.c ddos.c main.c -v -lm -lpthread -o ddos
+   gcc packet.c   util.c message.c socket.c dos.c main.c -v -lm -lpthread -o dos
    exit
 fi
 if [ $1 = "release" ]
   then
    echo "Building release"
-   gcc packet.c util.c message.c socket.c ddos.c main.c -lm -Ofast -Os -lpthread -o ddos
+   gcc packet.c util.c message.c socket.c dos.c main.c -lm -Ofast -Os -lpthread -o dos
    exit
 fi
 if [ $1 = "update" ]

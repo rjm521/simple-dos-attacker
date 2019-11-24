@@ -7,7 +7,7 @@
 //
 
 #include "message.h"
-#include "ddos.h"
+#include "dos.h"
 
 #include <errno.h>
 
