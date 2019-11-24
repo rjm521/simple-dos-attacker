@@ -2,9 +2,6 @@
 //  dos.c
 //  cdos
 //
-//  Created by Andre Zay on 17.12.2017.
-//  Copyright © 2017 Andre Zay. All rights reserved.
-//
 
 #include "dos.h"
 #include "util.h"
