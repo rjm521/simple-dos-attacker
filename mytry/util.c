@@ -48,24 +48,6 @@ int randrange(int start, int end)
     return rand() % (start + 1 - end) + start;
 }
 
-/*
-uint32_t rand_cmwc(void)
-{
-    uint64_t t, a = 18782LL;
-    static uint32_t i = 4095;
-    uint32_t x, r = 0xfffffffe;
-    i = (i + 1) & 4095;
-    t = a * Q[i] + c;
-    c = (t >> 32);
-    x = (uint32_t)t + c;
-    if (x < c) {
-        x++;
-        c++;
-    }
-    return (Q[i] = r - x);
-}
-*/
-
 const char* getarg(const char arg[2], const char* argv[], int argc)
 {
 
@@ -120,26 +102,6 @@ bool checklarg(const char* arg, const char* argv[], int argc)
     return false;
 }
 
-/*
-char* readfile(char* filename)
-{
-    char* buffer = 0;
-    long length;
-    FILE* f = fopen(filename, "rb");
-
-    if (f) {
-        fseek(f, 0, SEEK_END);
-        length = ftell(f);
-        fseek(f, 0, SEEK_SET);
-        buffer = malloc(length);
-        if (buffer) {
-            fread(buffer, 1, length, f);
-        }
-        fclose(f);
-    }
-    return buffer;
-}
-*/
 
 
 void sleep_ms(int milliseconds)
@@ -210,68 +172,3 @@ const char* sgetlarg(const char *arg, const char* argv[], int argc,const char* _
         return _default;
     }
 }
-
-/*
-bool is_root(void){
-    if(geteuid() != 0)
-    {
-        return false;
-    }else{
-        return true;
-    }
-}
-*/
-
-/*Cycled string list implementation
-slist* create_slist(){
-    slist* _new=(slist*)malloc(sizeof(slist));
-    _new->first=NULL;
-    _new->last=NULL;
-    _new->length=0;
-    return _new;
-}
-
-void add_slist(slist* this,char* x){
-    _node* _new=(_node*)malloc(sizeof(_node));
-    _new->next=this->first;
-    _new->val=(char*)malloc(strlen(x)*sizeof(char));
-    strcpy(_new->val, x);
-    if(this->length==0){
-        _new->next=_new;
-        this->first=_new;
-        this->last=_new;
-    }else{
-        assert(this->last!=NULL);
-        this->last->next=_new;
-        this->last=_new;
-    }
-    this->length++;
-}
-
-void free_slist(slist *this){//frees all list
-    _node *cur=this->first;
-    _node *_first=this->first;
-    while(cur->next!=_first){
-        _node* _cur=cur->next;
-        free(cur);
-        cur=_cur;
-    }
-    free(cur);
-    free(this);
-}
-
-_node* nth_slist(slist* this,uint64_t n){
-    _node* cur=this->first;
-    for(int i=0;i<n;i++){
-        cur=cur->next;
-    }
-    return cur;
-}
-/*End cyclic list implementations
-
-void assert_root(void){
-    if(!is_root()){
-        die("Root privlligies requeired to run this type of attack");
-    }
-}
-*/
