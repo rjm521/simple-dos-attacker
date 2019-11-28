@@ -8,7 +8,7 @@
 
 #include "socket.h"
 #include "util.h"
-#include "packet.h"
+
 
 int hostname2ip(const char* hostname, char* ip)   //返回0 表示成功找到IP  返回1 表示失败
 {
