@@ -1,14 +1,9 @@
-//
 //  message.h
-//  cdos
-//
-//  Created by Andre Zay on 17.12.2017.
-//  Copyright © 2017 Andre Zay. All rights reserved.
-//
 
 #ifndef message_h
 #define message_h
 
+//C语言对可变参数的支持通过stdarg.h来实现
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -55,4 +50,5 @@ void success(const char* format, ...);
 void success_n(const char* format, ...);
 void die(const char* format, ...);
 void dperror(const char* format,...);
+
 #endif /* message_h */

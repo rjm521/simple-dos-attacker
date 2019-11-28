@@ -1,10 +1,4 @@
-//
 //  socket.h
-//  cdos
-//
-//  Created by Andre Zay on 17.12.2017.
-//  Copyright © 2017 Andre Zay. All rights reserved.
-//
 
 #ifndef socket_h
 #define socket_h
@@ -28,4 +22,5 @@ extern bool socket_wait;
 bool dos_tcp_send_noalloc(int sock, char* data, char* buf, size_t bufsize);
 int dos_tcp_sock(char* host, int port);
 int hostname2ip(const char* hostname, char* ip);
+
 #endif /* socket_h */

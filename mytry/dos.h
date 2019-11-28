@@ -1,10 +1,5 @@
-//
 //  ddos.h
-//  cdos
-//
-//  Created by Andre Zay on 17.12.2017.
-//  Copyright © 2017 Andre Zay. All rights reserved.
-//
+
 
 #ifndef dos_h
 #define dos_h
@@ -22,12 +17,6 @@
 
 #define MODE_EMPTY 0 //not initiallized mode
 #define MODE_TCP 1
-#define MODE_UDP 2
-#define MODE_ICMP 3 //For future releases
-#define MODE_SYNFLOOD 4
-#define MODE_MEMCRASHED 5
-#define MODE_UDPV2 6
-
 
 /*extern是计算机语言中的一个关键字，可置于变量或者函数前，以表示变量或者函数的定义在别的文件中。*/
 extern double psent;

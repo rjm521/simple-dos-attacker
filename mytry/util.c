@@ -1,10 +1,5 @@
-//
 //  util.c
-//  cdos
-//
-//  Created by Andre Zay on 17.12.2017.
-//  Copyright © 2017 Andre Zay. All rights reserved.
-//
+
 
 #include "util.h"
 #include "message.h"
@@ -53,6 +48,7 @@ int randrange(int start, int end)
     return rand() % (start + 1 - end) + start;
 }
 
+/*
 uint32_t rand_cmwc(void)
 {
     uint64_t t, a = 18782LL;
@@ -68,14 +64,13 @@ uint32_t rand_cmwc(void)
     }
     return (Q[i] = r - x);
 }
+*/
 
 const char* getarg(const char arg[2], const char* argv[], int argc)
 {
 
     for (int i = 0; i < argc; i++) {
-#ifdef DEBUG
-        printf("%s ", argv[i]);
-#endif
+
         if (!strcmp(arg, argv[i])) {
 
             if (i < argc-1) {
@@ -87,13 +82,12 @@ const char* getarg(const char arg[2], const char* argv[], int argc)
     }
     return NULL;
 }
+
 const char* getlarg(const char* arg, const char* argv[], int argc)
 {
 
     for (int i = 0; i < argc; i++) {
-#ifdef DEBUG
-        printf("%s ", argv[i]);
-#endif
+
         if (!strcmp(arg, argv[i])) {
 
             if (i < argc-1) {
@@ -105,6 +99,7 @@ const char* getlarg(const char* arg, const char* argv[], int argc)
     }
     return NULL;
 }
+
 bool checkarg(const char arg[2], const char* argv[], int argc)
 {
     for (int i = 0; i < argc; i++) {
@@ -125,6 +120,7 @@ bool checklarg(const char* arg, const char* argv[], int argc)
     return false;
 }
 
+/*
 char* readfile(char* filename)
 {
     char* buffer = 0;
@@ -143,6 +139,9 @@ char* readfile(char* filename)
     }
     return buffer;
 }
+*/
+
+
 void sleep_ms(int milliseconds)
 {
     struct timespec ts;
@@ -150,17 +149,22 @@ void sleep_ms(int milliseconds)
     ts.tv_nsec = (milliseconds % 1000) * 1000000;
     nanosleep(&ts, NULL);
 }
+
+
 char* dtoa(double x){//double to char*
     char *s=(char*)malloc(sizeof(x)+1);
     sprintf(s,"%0.1f",x);
     return s;
 }
+
 char* bytes2mb(int64_t bcount){
     return strcat(dtoa(bcount/pow(1024.0,2)), "Mb");
 }
+
 char* bytes2any(int64_t bcount,uint8_t type){
     return dtoa(bcount/pow(1024.0,2));
 }
+
 char* metrics2str(uint8_t type){
     if(type==SIZE_BYTES){
         return "B";
@@ -174,6 +178,7 @@ char* metrics2str(uint8_t type){
         return "Tb";
     }
 }
+
 uint8_t str2metrics(char* metrics){
     if(strcmp(metrics, "b")==0){
         return SIZE_BYTES;
@@ -206,6 +211,7 @@ const char* sgetlarg(const char *arg, const char* argv[], int argc,const char* _
     }
 }
 
+/*
 bool is_root(void){
     if(geteuid() != 0)
     {
@@ -214,7 +220,9 @@ bool is_root(void){
         return true;
     }
 }
-/*Cycled string list implementation*/
+*/
+
+/*Cycled string list implementation
 slist* create_slist(){
     slist* _new=(slist*)malloc(sizeof(slist));
     _new->first=NULL;
@@ -259,10 +267,11 @@ _node* nth_slist(slist* this,uint64_t n){
     }
     return cur;
 }
-/*End cyclic list implementations*/
+/*End cyclic list implementations
 
 void assert_root(void){
     if(!is_root()){
         die("Root privlligies requeired to run this type of attack");
     }
 }
+*/

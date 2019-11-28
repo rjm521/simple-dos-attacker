@@ -1,10 +1,4 @@
-//
 //  message.c
-//  cdos
-//
-//  Created by Andre Zay on 17.12.2017.
-//  Copyright © 2017 Andre Zay. All rights reserved.
-//
 
 #include "message.h"
 #include "dos.h"
@@ -13,6 +7,8 @@
 
 bool hide_warnings;
 bool hide_errors;
+
+//接受任意多个参数，第一个参数必须为char *类型，后面有多少个参数都可以，没有也可以
 void info(const char* format, ...)
 {
     PRINT_FORMATTED(INFO)
