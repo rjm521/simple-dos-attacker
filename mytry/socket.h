@@ -10,7 +10,7 @@
 #define socket_h
 
 #include "message.h"
-#include "packet.h"
+
 
 #include <arpa/inet.h>
 #include <errno.h> //For errno - the error number
