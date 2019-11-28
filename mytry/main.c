@@ -6,8 +6,6 @@
 #include "dos.h"
 #include "message.h"
 #include "socket.h"
-#include "packet.h"
-
 
 bool socket_wait;
 
@@ -113,19 +111,6 @@ int main(int argc, const char* argv[])
 #endif
         PROTOCOL=MODE_TCP;
     }
-#ifdef DEBUG
-    info("Configuration:");
-    info("HIDE_WARNINGS=%d", hide_warnings);
-    info("HIDE ERRORS=%d",hide_errors);
-    info("RANDOM_PACKET=%d", RANDOM_PACKET);
-    info("THREAD_COUNT=%d", THREAD_COUNT);
-    info("PACKET_SIZE=%d", PACKET_SIZE);
-    info("MODE=%d", PROTOCOL);
-    info("USE_HTTP=%d", USE_HTTP);
-    info("STATUS=%d",status);
-    info("METRICS_TYPE=%d",metrics);
-    info("METRICS_STR=%s",metrics2str(metrics));
-#endif
 
     dos(host, port, packet, THREAD_COUNT, PROTOCOL);
 
